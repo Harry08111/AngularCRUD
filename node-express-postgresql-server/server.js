@@ -1,10 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-
+require('dotenv').config();
 const app = express();
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+  origin: process.env.ANG_URL
 };
 
 app.use(cors(corsOptions));
@@ -31,13 +31,13 @@ db.sequelize.sync()
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to Harsh Goswami's application." });
 });
 
 require("./app/routes/turorial.routes")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+
+  backend:
+    build:
+      context: ./node-express-postgresql-server
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=123
+      - DB_NAME=testdb
+    ports: ["8080:8080"]
+    depends_on: 
+      - db
+
+  frontend:
+    build:
+      context: ./angular-15-client
+    ports: ["8081:4200"]
+    depends_on:
+      - backend
+
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=testdb
+    # healthcheck:
+    # test: ["CMD", "pg_isready", "-U", "postgres"]
+    # volumes:
+    #   - db-data:/var/lib/postgresql/data
+
+  # volumes:
+  #     db-data:
