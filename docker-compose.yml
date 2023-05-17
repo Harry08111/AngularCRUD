@@ -1,3 +1,46 @@
+# version: "2"
+
+# services:
+#   backend:
+#     container_name: backend
+#     build:
+#      context: ./node-express-postgresql-server
+#     environment:
+#       - DB_HOST=db
+#       - DB_PORT=5432
+#       - DB_USER=postgres
+#       - DB_PASSWORD=123
+#       - DB_NAME=testdb
+#     ports:
+#       - 8080:8080
+#     depends_on:
+#       - db
+#     network:
+#      - ang1
+#      - post1
+
+#   frontend:
+#     container_name: frontend
+#     build:
+#      context: ./angular-15-client
+#     ports:
+#       - 8081:4200
+#     depends_on:
+#       - backend
+#     network:
+#       -ang1
+
+#   db:
+#     image: postgres
+#     container_name: db
+#     environment:
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=123
+#       - POSTGRES_DB=testdb
+#     ports:
+#       - 5432
+#     network: 
+#      - post1
 version: "3"
 
 services:
@@ -14,6 +57,9 @@ services:
     ports: ["8080:8080"]
     depends_on: 
       - db
+    networks:
+      - ang1
+      - post1
 
   frontend:
     build:
@@ -21,17 +67,29 @@ services:
     ports: ["8081:4200"]
     depends_on:
       - backend
+    networks:
+      - ang1
 
   db:
     image: postgres
+    container_name: db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=123
       - POSTGRES_DB=testdb
-    # healthcheck:
-    # test: ["CMD", "pg_isready", "-U", "postgres"]
-    # volumes:
-    #   - db-data:/var/lib/postgresql/data
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports: ["5432:5432"]
+  #   healthcheck:
+  #     test: ["CMD", "pg_isready", "-U", "postgres"]
+    networks: 
+      - post1    
+    volumes:
+      - db-data:/var/lib/postgresql/data
 
-  # volumes:
-  #     db-data:
+volumes:
+    db-data:
+networks:
+  ang1:
+    driver: bridge
+  post1:
+    driver: bridge
